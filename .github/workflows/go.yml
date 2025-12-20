@@ -41,6 +41,10 @@ jobs:
       - name: Go Test
         run: go test ./...
 
+      - name: Show OIDC Token
+        run: |
+         echo "GitHub OIDC Issuer is token.actions.githubusercontent.com"
+
   # ---------------------------
   # 2️⃣ DOCKER IMAGE BUILD JOB
   # ---------------------------
@@ -66,3 +70,4 @@ jobs:
       # Optional: verify image
       - name: List Docker Images
         run: docker images
+  
