@@ -15,59 +15,69 @@ jobs:
   # ---------------------------
   # 1️⃣ CODE BUILD JOB
   # ---------------------------
-  code-build:
-    name: Go Code Build
-    runs-on: ubuntu-latest
+  # code-build:
+  #   name: Go Code Build
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout source
+  #       uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
+  #     - name: Setup Go
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version: ${{ env.GO_VERSION }}
 
-      - name: Download dependencies
-        run: go mod download
+  #     - name: Download dependencies
+  #       run: go mod download
 
-      - name: Go Vet
-        run: go vet ./...
+  #     - name: Go Vet
+  #       run: go vet ./...
 
-      - name: Go Build
-        run: go build -v ./...
+  #     - name: Go Build
+  #       run: go build -v ./...
 
-      # Optional: run tests
-      - name: Go Test
-        run: go test ./...
-
-      - name: Show OIDC Token
-        run: |
-         echo "GitHub OIDC Issuer is token.actions.githubusercontent.com"
+  #     # Optional: run tests
+  #     - name: Go Test
+  #       run: go test ./...
 
   # ---------------------------
   # 2️⃣ DOCKER IMAGE BUILD JOB
   # ---------------------------
-  docker-build:
-    name: Docker Image Build
+  # docker-build:
+  #   name: Docker Image Build
+  #   runs-on: ubuntu-latest
+  #   needs: code-build   # 👈 runs only if code-build succeeds
+
+  #   steps:
+  #     - name: Checkout source
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
+
+  #     - name: Build Docker Image
+  #       run: |
+  #         docker build \
+  #           -t ${{ env.APP_NAME }}:${{ github.sha }} \
+  #           -t ${{ env.APP_NAME }}:latest \
+  #           .
+
+  #     # Optional: verify image
+  #     - name: List Docker Images
+  #       run: docker images
+        
+
+  auth-test:
     runs-on: ubuntu-latest
-    needs: code-build   # 👈 runs only if code-build succeeds
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - name: Authenticate to GCP using WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "principal://iam.googleapis.com/projects/169594489917/locations/global/workloadIdentityPools/github-pool/subject/SUBJECT_ATTRIBUTE_VALUE"
+          service_account: "169594489917-compute@developer.gserviceaccount.com"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker Image
+      - name: Verify authentication
         run: |
-          docker build \
-            -t ${{ env.APP_NAME }}:${{ github.sha }} \
-            -t ${{ env.APP_NAME }}:latest \
-            .
-
-      # Optional: verify image
-      - name: List Docker Images
-        run: docker images
-  
+          gcloud auth list
