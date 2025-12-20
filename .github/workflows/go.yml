@@ -5,13 +5,13 @@ name: Go
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 env:
   APP_NAME: go-cloudrun-hello
   GO_VERSION: "1.22"
 
-jobs:
+# jobs:
   # ---------------------------
   # 1️⃣ CODE BUILD JOB
   # ---------------------------
@@ -68,16 +68,16 @@ jobs:
   #       run: docker images
         
 
-  auth-test:
-    runs-on: ubuntu-latest
+  # auth-test:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Authenticate to GCP using WIF
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: "principal://iam.googleapis.com/projects/169594489917/locations/global/workloadIdentityPools/github-pool/subject/SUBJECT_ATTRIBUTE_VALUE"
-          service_account: "169594489917-compute@developer.gserviceaccount.com"
+  #   steps:
+  #     - name: Authenticate to GCP using WIF
+  #       uses: google-github-actions/auth@v2
+  #       with:
+  #         workload_identity_provider: "principal://iam.googleapis.com/projects/[]/locations/global/workloadIdentityPools/github-pool/subject/SUBJECT_ATTRIBUTE_VALUE"
+  #         service_account: "-compute@developer.gserviceaccount.com"
 
-      - name: Verify authentication
-        run: |
-          gcloud auth list
+  #     - name: Verify authentication
+  #       run: |
+  #         gcloud auth list
