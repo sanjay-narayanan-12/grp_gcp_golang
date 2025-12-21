@@ -124,7 +124,7 @@ jobs:
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy test-api \
-          --image asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:latest \
+          --image asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }} \
           --region asia-south1 \
           --platform managed \
           --allow-unauthenticated
