@@ -119,9 +119,9 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:latest .
+        docker build -t asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }} .
 
     - name: Push Docker image
       run: |
-        docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:latest
+        docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }}
 
