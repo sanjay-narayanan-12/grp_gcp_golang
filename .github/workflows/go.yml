@@ -113,15 +113,26 @@ jobs:
            workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
            service_account: github-actions-sa@fifth-subject-447111-f6.iam.gserviceaccount.com
 
-    - name: Configure Docker for Artifact Registry
-      run: |
-        gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+    # - name: Configure Docker for Artifact Registry
+    #   run: |
+    #     gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
 
-    - name: Build Docker image
-      run: |
-        docker build -t asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }} .
+    # - name: Build Docker image
+    #   run: |
+    #     docker build -t asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }} .
 
-    - name: Push Docker image
-      run: |
-        docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }}
+    # - name: Push Docker image
+    #   run: |
+    #     docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:${{ github.sha }}
 
+    - name: Set GCP project
+      run: |
+        gcloud config set project fifth-subject-447111-f6
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy test-api \
+          --image asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo/test-api:latest \
+          --region asia-south1 \
+          --platform managed \
+          --allow-unauthenticated
