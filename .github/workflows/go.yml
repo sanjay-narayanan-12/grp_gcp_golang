@@ -1,21 +1,21 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go
+# name: Go
 
-on:
-  push:
-    branches: [ "master" ]
+# on:
+#   push:
+#     branches: [ "master" ]
 
-env:
-  APP_NAME: go-cloudrun-hello
-  GO_VERSION: "1.22"
+# env:
+#   APP_NAME: go-cloudrun-hello
+#   GO_VERSION: "1.22"
 
-permissions:
-  id-token: write
-  contents: read
+# permissions:
+#   id-token: write
+#   contents: read
 
-jobs:
+# jobs:
   # ---------------------------
   # 1️⃣ CODE BUILD JOB
   # ---------------------------
@@ -71,20 +71,57 @@ jobs:
   #     - name: List Docker Images
   #       run: docker images
 
-  auth-test:
-    name: GCP auth test
+  # auth-test:
+  #   name: GCP auth test
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout source
+  #       uses: actions/checkout@v4
+        
+  #     - name: Authenticate to GCP using WIF
+  #       uses: google-github-actions/auth@v2
+  #       with:
+  #         workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
+  #         service_account: github-actions-sa@fifth-subject-447111-f6.iam.gserviceaccount.com
+
+  #     - name: Verify authentication
+  #       run: |
+  #         gcloud auth list
+
+name: Build & Push Docker Image
+
+on:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+  id-token: write   # 🔴 REQUIRED for WIF
+
+jobs:
+  docker-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-        
-      - name: Authenticate to GCP using WIF
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
-          service_account: github-actions-sa@fifth-subject-447111-f6.iam.gserviceaccount.com
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Verify authentication
-        run: |
-          gcloud auth list
+    - name: Authenticate to GCP (WIF)
+      uses: google-github-actions/auth@v2
+      with:
+           workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
+           service_account: github-actions-sa@fifth-subject-447111-f6.iam.gserviceaccount.com
+
+    - name: Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+
+    - name: Build Docker image
+      run: |
+        docker build -t asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo:${{ github.sha }} .
+
+    - name: Push Docker image
+      run: |
+        docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/test-api-repo:${{ github.sha }}
+
