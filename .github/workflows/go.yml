@@ -93,7 +93,7 @@ jobs:
   artifact-push-deploy:
     name: artifact-registry-repo-push
     runs-on: ubuntu-latest
-    needs: docker-build   # 👈 runs only if docker-build succeeds
+    needs: auth-test   # 👈 runs only if docker-build succeeds
     
     steps:
     - name: Checkout
