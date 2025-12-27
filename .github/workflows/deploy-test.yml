@@ -1,0 +1,35 @@
+name: Deploy Test
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run build
+        run: echo "Dev Build running..."
+
+      - name: Run tests
+        run: echo "Dev Tests running..."
+
+    # permissions:
+    #   id-token: write
+    #   contents: read
+
+    # steps:
+    #   - uses: actions/checkout@v4
+
+    #   - name: Authenticate to GCP (DEV)
+    #     uses: google-github-actions/auth@v2
+    #     with:
+    #       workload_identity_provider: projects/PROJ/locations/global/workloadIdentityPools/github/providers/github
+    #       service_account: sa-dev-deployer@PROJECT_ID.iam.gserviceaccount.com
+
+    #   - name: Deploy to Cloud Run (DEV)
+    #     run: echo "Deploying to DEV Cloud Run"
