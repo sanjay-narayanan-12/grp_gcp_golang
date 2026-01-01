@@ -27,3 +27,9 @@ jobs:
 
       - name: Verify auth
         run: gcloud auth list
+
+      - name: Test auth
+        run: | 
+          gcloud auth login --brief
+          gcloud auth print-access-token
+        
