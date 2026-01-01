@@ -24,3 +24,10 @@ jobs:
 
       - name: Verify auth
         run: gcloud auth list
+
+      - name: Test auth
+        run: | 
+          gcloud auth login --brief \
+            --cred-file=${{ secrets.GITHUB_OIDC_TOKEN_FILE}} \
+            --impersonate-service-account=sa-dev-deployer@fifth-subject-447111-f6.iam.gserviceaccount.com
+          # gcloud auth print-access-token
