@@ -4,6 +4,10 @@ on:
   push:
     branches: ['master']
 
+permissions:
+ id-token: write
+ contents: read
+
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
@@ -13,23 +17,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run build
-        run: echo "Dev Build running..."
+        run: echo "Test Build running..."
 
-      - name: Run tests
-        run: echo "Dev Tests running..."
+      - name: Authenticate to GCP (DEV)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
+          service_account: sa-dev-deployer@fifth-subject-447111-f6.iam.gserviceaccount.com
 
-    # permissions:
-    #   id-token: write
-    #   contents: read
-
-    # steps:
-    #   - uses: actions/checkout@v4
-
-    #   - name: Authenticate to GCP (DEV)
-    #     uses: google-github-actions/auth@v2
-    #     with:
-    #       workload_identity_provider: projects/PROJ/locations/global/workloadIdentityPools/github/providers/github
-    #       service_account: sa-dev-deployer@PROJECT_ID.iam.gserviceaccount.com
-
-    #   - name: Deploy to Cloud Run (DEV)
-    #     run: echo "Deploying to DEV Cloud Run"
+      - name: Verify auth
+        run: gcloud auth list

@@ -5,26 +5,26 @@
 # New commits pushed to PR
 # ❌ No deployment
 # ❌ No environment access
-name: CI - PR to master
+# name: CI - PR to master
 
-on:
-  pull_request:
-    branches:
-      - master
-    types: [opened, synchronize, reopened]
+# on:
+#   pull_request:
+#     branches:
+#       - master
+#     types: [opened, synchronize, reopened]
 
-jobs:
-  build-test:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-test:
+#     runs-on: ubuntu-latest
     
-    steps:
-      - uses: actions/checkout@v4
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - name: Run build
-        run: echo "Build running..."
+#       - name: Run build
+#         run: echo "Build running..."
 
-      - name: Run tests
-        run: echo "Tests running..."
+#       - name: Run tests
+#         run: echo "Tests running..."
 
 
 # # This workflow will build a golang project
