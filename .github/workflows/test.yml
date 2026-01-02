@@ -24,6 +24,16 @@ jobs:
           workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
           service_account: sa-dev-deployer@fifth-subject-447111-f6.iam.gserviceaccount.com
 
+      - name: Debug OIDC claims (optional)
+        run: |
+          curl -s "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=google-wif" \
+          -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+          | jq -r '.value' \
+          | awk -F. '{print $2}' | base64 -d | jq
+
+      - name: Inspect GitHub Token Claims
+        run: echo "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" | cut -d'.' -f2 | base64 --decode
+        
       - name: Configure Docker for Artifact Registry
         run: |
           gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
