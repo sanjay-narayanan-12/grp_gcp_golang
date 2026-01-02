@@ -24,11 +24,6 @@ jobs:
           workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
           service_account: sa-dev-deployer@fifth-subject-447111-f6.iam.gserviceaccount.com
 
-      - name: Verify auth
-        run: gcloud auth list
-
-      - name: Test auth
-        run: | 
-          gcloud auth login --brief
-          gcloud auth print-access-token
+      - name: auth-ar-test
+        run: gcloud auth configure-docker asia-south1-docker.pkg.dev
         
