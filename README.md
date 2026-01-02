@@ -1,2 +1,2 @@
 # grp_gcp_golang
-Gcp cloud run integration
+Gcp cloud run integration test
