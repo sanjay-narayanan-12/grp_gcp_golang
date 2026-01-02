@@ -1,0 +1,51 @@
+name: Test
+
+on:
+  push:
+    branches: ['master']
+
+permissions:
+ id-token: write
+ contents: read
+
+jobs:
+  deploy-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run build
+        run: echo "Test Build running..."${{github.ref}}
+
+      - name: Authenticate to GCP (Test)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
+          service_account: sa-dev-deployer@fifth-subject-447111-f6.iam.gserviceaccount.com
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+  
+      - name: Build Docker image
+        run: |
+          docker build -t asia-south1-docker.pkg.dev/fifth-subject-447111-f6/dev-api-repo/${{ github.actor }}-api:${{ github.sha }} .
+  
+      - name: Push Docker image
+        run: |
+          docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/dev-api-repo/${{ github.actor }}-api:${{ github.sha }}
+  
+      - name: Set GCP project
+        run: |
+          gcloud config set project fifth-subject-447111-f6
+  
+      # - name: Deploy to Cloud Run
+      #   run: |
+      #     gcloud run deploy test-api \
+      #       --image asia-south1-docker.pkg.dev/fifth-subject-447111-f6/dev-api-repo/${{ github.actor }}-api:${{ github.sha }} \
+      #       --region asia-south1 \
+      #       --platform managed \
+      #       --allow-unauthenticated      
+
+        
