@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run build
-        run: echo "Test Build running..."${{github.ref}}
+        run: echo "Test Build running..."${{github.actor}}
 
       - name: Authenticate to GCP (Test)
         uses: google-github-actions/auth@v2
