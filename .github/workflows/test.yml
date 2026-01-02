@@ -31,8 +31,8 @@ jobs:
           | jq -r '.value' \
           | awk -F. '{print $2}' | base64 -d | jq
 
-      - name: Inspect GitHub Token Claims
-        run: echo "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" | cut -d'.' -f2 | base64 --decode
+      # - name: Inspect GitHub Token Claims
+      #   run: echo "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" | cut -d'.' -f2 | base64 --decode
       
       - name: Configure Docker for Artifact Registry
         run: |
