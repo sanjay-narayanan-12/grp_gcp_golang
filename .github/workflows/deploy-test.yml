@@ -9,9 +9,8 @@ permissions:
  contents: read
 
 jobs:
-  deploy-dev:
+  deploy-test:
     runs-on: ubuntu-latest
-    environment: test
 
     steps:
       - uses: actions/checkout@v4
