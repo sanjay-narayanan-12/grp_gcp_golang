@@ -1,0 +1,36 @@
+name: Test
+
+on:
+  push:
+    branches: ['master']
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  docker-push:
+    name: artifact-registry-repo-push
+    runs-on: ubuntu-latest succeeds
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Authenticate to GCP (WIF)
+      uses: google-github-actions/auth@v2
+      with:
+          workload_identity_provider: projects/169594489917/locations/global/workloadIdentityPools/github-actions-pool/providers/github-provider
+          service_account: sa-dev-deployer@fifth-subject-447111-f6.iam.gserviceaccount.com
+
+    - name: Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker asia-south1-docker.pkg.test --quiet
+
+    - name: Build Docker image
+      run: |
+        docker build -t asia-south1-docker.pkg.test/fifth-subject-447111-f6/dev-api-repo/${{ github.ref_name }}-api:${{ github.sha }} .
+
+    - name: Push Docker image
+      run: |
+        docker push asia-south1-docker.pkg.test/fifth-subject-447111-f6/dev-api-repo/${{ github.ref_name }}-api:${{ github.sha }}
