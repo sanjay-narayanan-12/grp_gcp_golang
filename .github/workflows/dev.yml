@@ -36,4 +36,4 @@ jobs:
 
     - name: Push Docker image
       run: |
-        docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/dev-api-repo/${{ github.ref_name }-api:${{ github.sha }}
+        docker push asia-south1-docker.pkg.dev/fifth-subject-447111-f6/dev-api-repo/${{ github.ref_name }}-api:${{ github.sha }}
